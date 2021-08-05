@@ -2,14 +2,22 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const nodemailer = require("nodemailer");
+const validator = require("email-validator");
 const { StatusCodes } = require("http-status-codes");
 
 app.use(express.json());
 
 app.post("/send-mail", async (req, res) => {
-  const { email, title, body } = req.body;
-
+  let errCode;
   try {
+    const { email, title, body } = req.body;
+
+    const { valid, message } = validate(email, title, body);
+    if (!valid) {
+      errCode = StatusCodes.BAD_REQUEST;
+      throw new Error(message);
+    }
+
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -34,18 +42,17 @@ app.post("/send-mail", async (req, res) => {
     };
 
     let info = await transporter.sendMail(mailData);
-
     console.log("Message sent: %s", info.messageId);
-
     const { messageTime, messageSize } = info;
 
     return res
       .status(StatusCodes.OK)
       .send({ success: true, info: { messageTime, messageSize } });
   } catch (error) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
+    const { message } = error;
+    return res.status(errCode || StatusCodes.UNAUTHORIZED).send({
       success: false,
-      error,
+      err: message,
     });
   }
 });
@@ -54,6 +61,27 @@ const start = async () => {
   app.listen(5000, () => {
     console.log("server listening on 5000");
   });
+};
+
+const validate = function (email, title, body) {
+  let valid = true;
+  let message = "";
+  if (!email || !title || !body) {
+    valid = false;
+    message = "email, title and body are required";
+  }
+
+  if (!validator.validate(email)) {
+    valid = false;
+    message = "please check if your email is correct";
+  }
+
+  if (title.length > 70) {
+    valid = false;
+    message = "Title can't be more than 70 characters";
+  }
+
+  return { valid, message };
 };
 
 start();
