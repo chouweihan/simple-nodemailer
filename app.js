@@ -11,13 +11,14 @@ app.use(
     origin: [
       "https://chouweihan.com",
       "http://chouweihan.com",
-      "http://www.chouweihan.com",
+      "http://chouweihan.com",
     ],
   })
 );
 app.use(express.json());
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://www.chouweihan.com");
+  res.header("Access-Control-Allow-Origin", "https://chouweihan.com");
+  res.setHeader("Access-Control-Allow-Methods", "POST");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
