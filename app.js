@@ -1,10 +1,16 @@
 require("dotenv").config();
+var cors = require("cors");
 const express = require("express");
 const app = express();
 const nodemailer = require("nodemailer");
 const validator = require("email-validator");
 const { StatusCodes } = require("http-status-codes");
 
+app.use(
+  cors({
+    origin: process.env.ORIGIN_URL,
+  })
+);
 app.use(express.json());
 
 app.post("/send-mail", async (req, res) => {
@@ -50,7 +56,7 @@ app.post("/send-mail", async (req, res) => {
       .send({ success: true, info: { messageTime, messageSize } });
   } catch (error) {
     const { message } = error;
-    return res.status(errCode || StatusCodes.UNAUTHORIZED).send({
+    return res.status(errCode ? errCode : StatusCodes.UNAUTHORIZED).send({
       success: false,
       err: message,
     });
@@ -68,12 +74,12 @@ const validate = function (email, title, body) {
   let message = "";
   if (!email || !title || !body) {
     valid = false;
-    message = "email, title and body are required";
+    message = "Email, Title and Message are required";
   }
 
   if (!validator.validate(email)) {
     valid = false;
-    message = "please check if your email is correct";
+    message = "Please check if your Email is correct";
   }
 
   if (title.length > 70) {
