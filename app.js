@@ -7,7 +7,7 @@ const validator = require("email-validator");
 const { StatusCodes } = require("http-status-codes");
 
 app.use(express.json());
-
+app.use(cors());
 app.get("/", (req, res) => {
   res.send("hi");
 });
@@ -63,8 +63,8 @@ app.post("/send-mail", async (req, res) => {
 });
 
 const start = async () => {
-  app.listen(5000, () => {
-    console.log("server listening on 5000");
+  app.listen(process.env.PORT || 5000, () => {
+    console.log("app started");
   });
 };
 
