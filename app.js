@@ -8,8 +8,7 @@ const { StatusCodes } = require("http-status-codes");
 
 app.use(
   cors({
-    origin: "https://www.chouweihan.com",
-    credentials: true,
+    origin: "*",
   })
 );
 app.use(express.json());
