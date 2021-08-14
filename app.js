@@ -6,7 +6,12 @@ const nodemailer = require("nodemailer");
 const validator = require("email-validator");
 const { StatusCodes } = require("http-status-codes");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://www.chouweihan.com",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.post("/send-mail", async (req, res) => {
