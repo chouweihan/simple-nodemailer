@@ -8,8 +8,9 @@ const { StatusCodes } = require("http-status-codes");
 
 app.use(
   cors({
-    origin: "chouweihan.com",
+    origin: "https://www.chouweihan.com",
     methods: ["GET", "POST"],
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json());
