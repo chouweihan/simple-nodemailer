@@ -8,23 +8,11 @@ const { StatusCodes } = require("http-status-codes");
 
 app.use(
   cors({
-    origin: [
-      "https://chouweihan.com",
-      "http://chouweihan.com",
-      "http://chouweihan.com",
-    ],
+    origin: "https://chouweihan.com",
+    methods: ["GET", "POST"],
   })
 );
 app.use(express.json());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://chouweihan.com");
-  res.setHeader("Access-Control-Allow-Methods", "POST");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
 app.post("/send-mail", async (req, res) => {
   let errCode;
