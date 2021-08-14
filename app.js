@@ -7,11 +7,6 @@ const validator = require("email-validator");
 const { StatusCodes } = require("http-status-codes");
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://www.chouweihan.com/",
-  })
-);
 
 app.get("/", (req, res) => {
   res.send("hi");
