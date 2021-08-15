@@ -17,9 +17,9 @@ app.use(
 app.post("/send-mail", async (req, res) => {
   let errCode;
   try {
-    const { email, title, body } = req.body;
+    const { email, subject, body } = req.body;
 
-    const { valid, message } = validate(email, title, body);
+    const { valid, message } = validate(email, subject, body);
     if (!valid) {
       errCode = StatusCodes.BAD_REQUEST;
       throw new Error(message);
@@ -44,7 +44,7 @@ app.post("/send-mail", async (req, res) => {
     const mailData = {
       from: email,
       to: process.env.DEST_EMAIL,
-      subject: `${email}: ${title}`,
+      subject: `${email}: ${subject}`,
       html: `<div>${body}</div>`,
     };
 
@@ -70,12 +70,12 @@ const start = async () => {
   });
 };
 
-const validate = function (email, title, body) {
+const validate = function (email, subject, body) {
   let valid = true;
   let message = "";
-  if (!email || !title || !body) {
+  if (!email || !subject || !body) {
     valid = false;
-    message = "Email, Title and Message are required";
+    message = "Email, Subject and Message are required";
   }
 
   if (!validator.validate(email)) {
@@ -83,9 +83,9 @@ const validate = function (email, title, body) {
     message = "Please check if your Email is correct";
   }
 
-  if (title.length > 70) {
+  if (subject.length > 70) {
     valid = false;
-    message = "Title can't be more than 70 characters";
+    message = "Subject can't be more than 70 characters";
   }
 
   return { valid, message };
